@@ -2,11 +2,12 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:test/widget/detail_screen.dart';
 import '../model/model_movie.dart';
 
 class CarouselImage extends StatefulWidget {
   final List<Movie> movies;
-  CarouselImage({required this.movies});
+  const CarouselImage({super.key, required this.movies});
   _CarouselImageState createState() => _CarouselImageState();
 }
 
@@ -22,7 +23,7 @@ class _CarouselImageState extends State<CarouselImage> {
   void initState() {
     super.initState();
     movies = widget.movies;
-    images = movies.map((m) => Image.asset('./images/' + m.poster)).toList();
+    images = movies.map((m) => Image.asset('./images/${m.poster}')).toList();
     keywords = movies.map((m) => m.keyword).toList();
     likes = movies.map((m) => m.like).toList();
     _currentKeyword = keywords[0];
@@ -30,6 +31,7 @@ class _CarouselImageState extends State<CarouselImage> {
 
   @override
   Widget build(BuildContext context) {
+    final Size deviceSize = MediaQuery.of(context).size;
     return Column(
       children: [
         Container(
@@ -44,7 +46,8 @@ class _CarouselImageState extends State<CarouselImage> {
             })
         ),
         Container(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 5),
+          height: 35,
           child: Text(
               _currentKeyword,
               style: const TextStyle(fontSize: 15)
@@ -54,7 +57,7 @@ class _CarouselImageState extends State<CarouselImage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(
-              width: 100,
+              width: deviceSize.width * 0.3,
               child: Column(
                   children: [
                     likes[_currentPage]
@@ -65,29 +68,37 @@ class _CarouselImageState extends State<CarouselImage> {
               ),
             ),
             SizedBox(
-              width: 100,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                onPressed: () {},
-                child: Row(
-                  children: const [
-                    Icon(Icons.play_arrow, color: Colors.black),
-                    Padding(padding: EdgeInsets.all(3)),
-                    Text(
-                      '재생',
-                      style: TextStyle(color: Colors.black)
+                width: deviceSize.width * 0.22,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    onPressed: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.play_arrow, color: Colors.black),
+                        Padding(padding: EdgeInsets.all(3)),
+                        Text(
+                            '재생',
+                            style: TextStyle(color: Colors.black)
+                        )
+                      ],
                     )
-                  ],
                 )
-              )
             ),
             SizedBox(
-              width: 100,
+              width: deviceSize.width * 0.3,
               child: Column(
                 children: [
                   IconButton(
                       icon: const Icon(Icons.info),
-                      onPressed: () {}
+                      onPressed: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (BuildContext context) {
+                                  return DetailScreen(movie: movies[_currentPage]);
+                                }));
+                      }
                   ),
                   const Text(
                     '정보',
